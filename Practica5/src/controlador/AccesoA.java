@@ -4,7 +4,7 @@
  * - Actualizaciones, Borrados, e inserciones directas a la BDs y no al ResulSet.
  */
 
-package accesoBDsV1;
+package controlador;
 import java.sql.*;
 
 public class AccesoA {
@@ -37,7 +37,9 @@ public class AccesoA {
 
       while (rs.next()) {
         for (int i = 1; i <= numCols; i++) {
-          System.out.print(rs.getString(i) + " ");
+            //String nombre = rs.getString(i) + "Nombre"); //con cada columna de la tabla. Si sigue fallando cambiar quitando el for y solo dejar el while
+            //System.out.printf("%s - ", nombre); //para ir imprimiendo esas variables guardadas
+          System.out.print(rs.getString(i) + " ");          
         }
         System.out.println("");
       }
@@ -57,3 +59,21 @@ public class AccesoA {
     }
   }
 }
+/*
+String datebaseURL = "jdbc:derby://localhost:1527/empresa";
+Connection connect = DriverManager.getConnection(datebaseURL);
+
+String sql = "SELECT * FROM empresa";
+
+Statement stat = connect.createStatement();
+ResultSet result = stat.executeQuery(sql);
+
+while (rs.next()
+{
+    String nombre = rs.getString(i) + "Nombre");
+
+    System.out.printf("%s - ", nombre);
+}
+
+connect.close;
+*/
