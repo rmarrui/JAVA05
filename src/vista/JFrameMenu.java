@@ -41,14 +41,13 @@ public class JFrameMenu extends javax.swing.JFrame {
     private void initComponents() {
 
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1JList = new javax.swing.JMenu();
+        jMenuPrincipal = new javax.swing.JMenu();
         jMenuItemJList = new javax.swing.JMenuItem();
-        jMenuVisualiza1a1 = new javax.swing.JMenu();
-        jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem1a1 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jMenu1JList.setText("JList");
+        jMenuPrincipal.setText("Menu");
 
         jMenuItemJList.setText("JList");
         jMenuItemJList.addActionListener(new java.awt.event.ActionListener() {
@@ -56,21 +55,17 @@ public class JFrameMenu extends javax.swing.JFrame {
                 jMenuItemJListActionPerformed(evt);
             }
         });
-        jMenu1JList.add(jMenuItemJList);
+        jMenuPrincipal.add(jMenuItemJList);
 
-        jMenuBar1.add(jMenu1JList);
-
-        jMenuVisualiza1a1.setText("Visualizar 1 a 1");
-
-        jMenuItem2.setText("Visualizar 1 a 1 ");
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+        jMenuItem1a1.setText("Visualizar 1 a 1 ");
+        jMenuItem1a1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
+                jMenuItem1a1ActionPerformed(evt);
             }
         });
-        jMenuVisualiza1a1.add(jMenuItem2);
+        jMenuPrincipal.add(jMenuItem1a1);
 
-        jMenuBar1.add(jMenuVisualiza1a1);
+        jMenuBar1.add(jMenuPrincipal);
 
         setJMenuBar(jMenuBar1);
 
@@ -88,16 +83,16 @@ public class JFrameMenu extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        // TODO add your handling code here:
-        cambiarContenedor(panel_Visualiza_a1);
-        panel_Visualiza_a1.muestraNodo(); //mostramos ese primero de la lista
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
-
     private void jMenuItemJListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemJListActionPerformed
         // TODO add your handling code here:
+        
+        // panel_Visualiza_JList.fechaMaxima.setMaxDate(System.currentTimeMillis());
         cambiarContenedor(panel_Visualiza_JList);
     }//GEN-LAST:event_jMenuItemJListActionPerformed
+
+    private void jMenuItem1a1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1a1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem1a1ActionPerformed
 
     private void cambiarContenedor(javax.swing.JPanel aux) { //usamos un método para ir cambiando cada panel. Así solo lo escribimos una vez
         this.setContentPane(aux);
@@ -139,15 +134,14 @@ public class JFrameMenu extends javax.swing.JFrame {
         });
     }
     
-    private JPanelList  panel_Visualiza_JList = new JPanelList();
+    private JPanelJList  panel_Visualiza_JList = new JPanelJList();
     private JVisualizar1a1 panel_Visualiza_a1 = new JVisualizar1a1();
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenu jMenu1JList;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem1a1;
     private javax.swing.JMenuItem jMenuItemJList;
-    private javax.swing.JMenu jMenuVisualiza1a1;
+    private javax.swing.JMenu jMenuPrincipal;
     // End of variables declaration//GEN-END:variables
 
     public Icon setIcon(String url, JMenu boton)

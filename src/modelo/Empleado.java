@@ -86,7 +86,12 @@ public abstract class Empleado {
     }
     
     
-    public abstract String toString();
+    public String toString(){
+        String s = this.getNumero()+"*"
+                + this.getNombre() + "*"
+                + this.getApellido() + "*"
+                + this.getSueldoMaximo();
 
-    public abstract float getDato();
+        return s;
+    }
 }
