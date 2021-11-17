@@ -90,10 +90,10 @@ public class JFrameMenu extends javax.swing.JFrame {
 
     private void jMenuItem2Visualiza1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2Visualiza1ActionPerformed
         // TODO add your handling code here:
-        cambiarContenedor(panel_Visualiza_a1);
-        panel_Visualiza_a1.iniciar();
         panel_Visualiza_a1.inicializaComboBox();
-        panel_Visualiza_a1.muestraNodo(); //mostramos ese primero de la lista        
+        panel_Visualiza_a1.iniciar();
+        panel_Visualiza_a1.muestraNodo(); //mostramos ese primero de la lista
+        cambiarContenedor(panel_Visualiza_a1);
         
         
     }//GEN-LAST:event_jMenuItem2Visualiza1ActionPerformed

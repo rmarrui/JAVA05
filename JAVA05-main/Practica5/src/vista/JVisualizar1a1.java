@@ -14,6 +14,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -29,6 +31,7 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
     Connection con = null;
     Statement stmt = null;
     ResultSet rs = null;
+
     /**
      * Creates new form JPanelVer
      */
@@ -209,7 +212,7 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
     private void jButton_SiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_SiguienteActionPerformed
         // TODO add your handling code here:
 
-/*        if (!JFrameMenu.getLista().esUltimo()) { //mientras no hayamos llegado al final de la lista podremos avanzar al siguiente elemento 
+        /*        if (!JFrameMenu.getLista().esUltimo()) { //mientras no hayamos llegado al final de la lista podremos avanzar al siguiente elemento 
             JFrameMenu.getLista().avanzar();
         } else {
             jButton_Siguiente.setEnabled(false); //si estamos al final de la lista inhabilitamos el boton de siguiente
@@ -218,12 +221,19 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
         this.muestraNodo(JFrameMenu.getLista()); //mostramos el nodo en el que estamos actualmente
 
         jButton_Anterior.setEnabled(true); //como no estamos en el primero el boton anterior lo habilitamos
-*/
- /*       if(avanzar())
-        {
-            Empleado = leer();
+         */
+        if (avanzar()) {
+            jButton_Anterior.setEnabled(true);
+            muestraNodo();
+            try {
+                if (rs.isLast()) {
+                    jButton_Siguiente.setEnabled(false);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(JVisualizar1a1.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-*/
+
     }//GEN-LAST:event_jButton_SiguienteActionPerformed
 
     private void jTextField_SueldoMaximoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_SueldoMaximoActionPerformed
@@ -232,7 +242,7 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
 
     private void jButton_AnteriorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_AnteriorActionPerformed
         // TODO add your handling code here:
- /*       if (!JFrameMenu.getLista().esPrimero()) { //mientras no hayamos llegado al principio de la lista podremos retorceder al anterior elemento 
+        /*       if (!JFrameMenu.getLista().esPrimero()) { //mientras no hayamos llegado al principio de la lista podremos retorceder al anterior elemento 
             JFrameMenu.getLista().retroceder();
         } else {
             jButton_Anterior.setEnabled(false); //si estamos al principio de la lista inhabilitamos el boton de anterior
@@ -241,7 +251,18 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
         this.muestraNodo(JFrameMenu.getLista()); //mostramos el nodo en el que estamos actualmente
 
         jButton_Siguiente.setEnabled(true); //como no estamos en el ultimo el boton siguiente lo habilitamos
-*/
+         */
+        if (retroceder()) {
+            jButton_Siguiente.setEnabled(true);
+            muestraNodo();
+            try {
+                if (rs.isFirst()) {
+                    jButton_Anterior.setEnabled(false);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(JVisualizar1a1.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }//GEN-LAST:event_jButton_AnteriorActionPerformed
 
     private void jTextField_NombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField_NombreActionPerformed
@@ -257,7 +278,16 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
     }//GEN-LAST:event_jTextField_SalarioActionPerformed
 
     private void jComboBox_ApellidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox_ApellidosActionPerformed
-        // TODO add your handling code here:        
+        // TODO add your handling code here:
+        if((String) jComboBox_Apellidos.getSelectedItem() == "NINGUNO"){
+            /*try {
+                rs = stmt.executeQuery("SELECT * FROM EMPLEADO");
+                rs.next();
+            } catch (SQLException ex) {
+                Logger.getLogger(JVisualizar1a1.class.getName()).log(Level.SEVERE, null, ex);
+            }*/
+           
+        }
     }//GEN-LAST:event_jComboBox_ApellidosActionPerformed
 
 
@@ -281,87 +311,73 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
     private javax.swing.JTextField jTextField_SueldoMaximo;
     // End of variables declaration//GEN-END:variables
 
-
-    public boolean iniciar()
-    {
-        try
-        {
+    public boolean iniciar() {
+        try {
             con = ConnectionFactory.getConnection();
-            stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, 
-                                  ResultSet.CONCUR_READ_ONLY);
+            stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
             rs = stmt.executeQuery("SELECT * FROM EMPLEADO");
-                       
+
             if (rs.next()) {
-                rs.beforeFirst();
+                // rs.beforeFirst();
                 return true;
             } else {
                 return false;
             }
-        }catch(Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
     }
-    
-    public boolean avanzar() //REVISAR
+
+    public boolean avanzar() 
     {
-        try
-        {
+        try {
             return rs.next();
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
-        }            
+        }
     }
-    
-    /*public Empleado leer()
-    {        
-        try
-        {
-            System.out.println("NUMERO: " + rs.getInt(1) 
-                               + ", NOMBRE: " + rs.getString(2) 
-                               + ", APELLIDO: " + rs.getString(3)
-                               + ", FOTO: " + rs.getString(4)
-                               + ", SUELDO: " + rs.getFloat(5)
-                               + ", SUELDO-MAXIMO: " + rs.getFloat(6)
-                               + ", FECHA-ALTA: " + rs.getDate(7)
-            );
-            return new Empleado rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getFloat(5), rs.getFloat(6), rs.getDate(7);
-        }catch(Exception e)
-        {
-            e.printStackTrace();           
-        }                
-    }
-    */
-    public void muestraNodo() {
-            //jButtonFoto.setEnabled(false);
-            jTextFieldCod.setText("1000");
-            jTextField_Nombre.setText("******");
-            jTextField_Apellido.setText("******");
-            jTextField_Salario.setText(0.0 + " euros");
-            jTextField_Fecha.setText("01/01/2000");
-            jTextField_SueldoMaximo.setText(0.0 + " euros");
-            jButtonFoto.setIcon(setIcon("/fotos/default.jpg", jButtonFoto));
-                        
-    }
-    
-    public Icon setIcon(String url, JButton boton)
+
+    public boolean retroceder() 
     {
+        try {
+            return rs.previous();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public void muestraNodo() {
+        //jButtonFoto.setEnabled(false);
+        try {
+            jTextFieldCod.setText(Integer.toString(rs.getInt("NUMERO")));
+            jTextField_Nombre.setText(rs.getString("NOMBRE"));
+            jTextField_Apellido.setText(rs.getString("APELLIDO"));
+            jTextField_Salario.setText(Float.toString(rs.getFloat("SUELDO")) + " euros");
+            jTextField_Fecha.setText(rs.getDate("FECHAALTA").toString());
+            jTextField_SueldoMaximo.setText(Float.toString(rs.getFloat("SUELDOMAXIMO")) + " euros");
+            //jButtonFoto.setIcon(setIcon("/fotos/default.jpg", jButtonFoto));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public Icon setIcon(String url, JButton boton) {
         ImageIcon icon = new ImageIcon(getClass().getResource(url));
-        
+
         int ancho = boton.getWidth();
         int alto = boton.getHeight();
-        
+
         ImageIcon icono = new ImageIcon(icon.getImage().getScaledInstance(ancho, alto, Image.SCALE_DEFAULT));
-        
+
         return icon;
     }
-    
-    public void inicializaComboBox()
-    {
+
+    public void inicializaComboBox() {
         /*ArrayList<String> listaApellidos = new ArrayList<String>();
         
         listaApellidos = ConexionConsulta.llenar_combo();
@@ -370,46 +386,53 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
         {
             jComboBox_Apellidos.addItem(listaApellidos.get(i));
         }*/
+        Connection con_aux = null;
+        Statement stmt_aux = null;
+        ResultSet rs_aux = null;
         
-        try
-        {
+
+        try {
+            con_aux = ConnectionFactory.getConnection();
+            stmt_aux = con_aux.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+                    ResultSet.CONCUR_READ_ONLY);
+            rs_aux = stmt_aux.executeQuery("SELECT DISTINCT APELLIDO FROM EMPLEADO ORDER BY APELLIDO");
+            
             this.jComboBox_Apellidos.addItem("NINGUNO");
             //HAY QUE CONECTARLO CON LA CLASE CONECTIONFACTORY
             //Connection con = DriverManager.getConnection("jdbc:derby://localhost:1527/empresa","empresa","empresa"); //abrimos la conexion con la BD
-            con = ConnectionFactory.getConnection();
+            /*con = ConnectionFactory.getConnection();
             stmt = con.createStatement(); //el objeto con el que vas a usar el SQL con esa BD
             rs = stmt.executeQuery("SELECT DISTINCT APELLIDO FROM empleado ORDER BY APELLIDO"); //objeto que va a usar la sentencia select que le indiques que afecta al estado
-            
-            while(rs.next()) //mientras haya datos en la BD
+*/
+            while (rs_aux.next()) //mientras haya datos en la BD
             {
-                this.jComboBox_Apellidos.addItem(rs.getString("APELLIDO"));
+                this.jComboBox_Apellidos.addItem(rs_aux.getString("APELLIDO"));
             }
-        
-            con.close();
-           
-           
-           
-        }catch(Exception e)
-        {
+
+            rs_aux.close();
+            stmt_aux.close();
+            con_aux.close();
+            //    con.close();
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(this, e);
         }
         finally
         {
-            ConnectionFactory.close(rs);
-            ConnectionFactory.close(stmt);
-            ConnectionFactory.close(con);
+            ConnectionFactory.close(rs_aux);
+            ConnectionFactory.close(stmt_aux);
+            ConnectionFactory.close(con_aux);
         }
-        
+
     }
-    
+
     public void vaciarCampos() {
-            jTextFieldCod.setText("1000");
-            jTextField_Nombre.setText("******");
-            jTextField_Apellido.setText("******");
-            jTextField_Salario.setText(0.0 + " euros");
-            jTextField_Fecha.setText("01/01/2000");
-            jTextField_SueldoMaximo.setText(0.0 + " euros");
-            jButtonFoto.setIcon(setIcon("/fotos/default.jpg", jButtonFoto));
+        jTextFieldCod.setText("1000");
+        jTextField_Nombre.setText("******");
+        jTextField_Apellido.setText("******");
+        jTextField_Salario.setText(0.0 + " euros");
+        jTextField_Fecha.setText("01/01/2000");
+        jTextField_SueldoMaximo.setText(0.0 + " euros");
+        jButtonFoto.setIcon(setIcon("/fotos/default.jpg", jButtonFoto));
     }
 
 }
