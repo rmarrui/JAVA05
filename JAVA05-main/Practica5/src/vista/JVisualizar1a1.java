@@ -279,13 +279,14 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
 
     private void jComboBox_ApellidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox_ApellidosActionPerformed
         // TODO add your handling code here:
-        if((String) jComboBox_Apellidos.getSelectedItem() == "TODOS"){
+        if(((String) jComboBox_Apellidos.getSelectedItem()).equals("TODOS")){
             con.iniciaRecorrido("SELECT * FROM EMPLEADO");
         }
-        
+        else{
+            con.iniciaRecorrido("SELECT * FROM EMPLEADO WHERE APELLIDO = '" + ((String) jComboBox_Apellidos.getSelectedItem())+"'");
+        }
         con.siguienteRegistro();
         muestraNodo();
-        jButton_Anterior.setEnabled(false);
     }//GEN-LAST:event_jComboBox_ApellidosActionPerformed
 
 
@@ -344,7 +345,7 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
 
     public void muestraNodo() {
         //jButtonFoto.setEnabled(false);
-        ArrayList campos = new ArrayList();
+        ArrayList campos;
         
         //try {
             campos = con.datosActual();
@@ -355,6 +356,17 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
             jTextField_Salario.setText(((String) campos.get(4)) + " euros");
             jTextField_SueldoMaximo.setText(((String) campos.get(5)) + " euros");
             jTextField_Fecha.setText((String) campos.get(6));
+            
+        try {
+            if(con.isFirst()){
+                jButton_Anterior.setEnabled(false);
+            }
+            if(con.isLast()){
+                jButton_Siguiente.setEnabled(false);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(JVisualizar1a1.class.getName()).log(Level.SEVERE, null, ex);
+        }
             
         /*} catch (SQLException e) {
             e.printStackTrace();
@@ -376,9 +388,9 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
     public void inicializaComboBox() {
         ArrayList<ArrayList> listaApellidos = new ArrayList<ArrayList>();
         
-        Conexion con = new Conexion();
+        Conexion con_combo = new Conexion();
         
-        listaApellidos = con.ejecutaQuery("SELECT DISTINCT APELLIDO FROM EMPLEADO ORDER BY APELLIDO ASC");
+        listaApellidos = con_combo.ejecutaQuery("SELECT DISTINCT APELLIDO FROM EMPLEADO ORDER BY APELLIDO ASC");
         
         jComboBox_Apellidos.addItem("TODOS");
         
@@ -387,7 +399,7 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
             jComboBox_Apellidos.addItem((String) listaApellidos.get(0).get(i));
         }
         
-        con.close();
+        con_combo.close();
 /*        Connection con_aux = null;
         Statement stmt_aux = null;
         ResultSet rs_aux = null;
