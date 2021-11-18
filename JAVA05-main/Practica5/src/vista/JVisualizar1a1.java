@@ -27,15 +27,17 @@ import modelo.*;
  * @author alumno
  */
 public class JVisualizar1a1 extends javax.swing.JPanel {
-
+/*
     Connection con = null;
     Statement stmt = null;
     ResultSet rs = null;
-
+*/
+    Conexion con;
     /**
      * Creates new form JPanelVer
      */
     public JVisualizar1a1() {
+        con = new Conexion();
         initComponents();
     }
 
@@ -226,9 +228,8 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
             jButton_Anterior.setEnabled(true);
             muestraNodo();
             try {
-                if (rs.isLast()) {
+                if(con.isLast())
                     jButton_Siguiente.setEnabled(false);
-                }
             } catch (SQLException ex) {
                 Logger.getLogger(JVisualizar1a1.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -256,9 +257,8 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
             jButton_Siguiente.setEnabled(true);
             muestraNodo();
             try {
-                if (rs.isFirst()) {
+                if(con.isFirst())
                     jButton_Anterior.setEnabled(false);
-                }
             } catch (SQLException ex) {
                 Logger.getLogger(JVisualizar1a1.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -279,15 +279,13 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
 
     private void jComboBox_ApellidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox_ApellidosActionPerformed
         // TODO add your handling code here:
-        if((String) jComboBox_Apellidos.getSelectedItem() == "NINGUNO"){
-            /*try {
-                rs = stmt.executeQuery("SELECT * FROM EMPLEADO");
-                rs.next();
-            } catch (SQLException ex) {
-                Logger.getLogger(JVisualizar1a1.class.getName()).log(Level.SEVERE, null, ex);
-            }*/
-           
+        if((String) jComboBox_Apellidos.getSelectedItem() == "TODOS"){
+            con.iniciaRecorrido("SELECT * FROM EMPLEADO");
         }
+        
+        con.siguienteRegistro();
+        muestraNodo();
+        jButton_Anterior.setEnabled(false);
     }//GEN-LAST:event_jComboBox_ApellidosActionPerformed
 
 
@@ -312,8 +310,10 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     public boolean iniciar() {
+        
         try {
-            con = ConnectionFactory.getConnection();
+            con.iniciaRecorrido("SELECT * FROM EMPLEADO");
+        /*    con = ConnectionFactory.getConnection();
             stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
                     ResultSet.CONCUR_READ_ONLY);
             rs = stmt.executeQuery("SELECT * FROM EMPLEADO");
@@ -323,7 +323,9 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
                 return true;
             } else {
                 return false;
-            }
+            }*/
+            con.siguienteRegistro();
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -332,37 +334,31 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
 
     public boolean avanzar() 
     {
-        try {
-            return rs.next();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+        return con.siguienteRegistro();
     }
 
     public boolean retroceder() 
     {
-        try {
-            return rs.previous();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+        return con.anteriorRegistro();
     }
 
     public void muestraNodo() {
         //jButtonFoto.setEnabled(false);
-        try {
-            jTextFieldCod.setText(Integer.toString(rs.getInt("NUMERO")));
-            jTextField_Nombre.setText(rs.getString("NOMBRE"));
-            jTextField_Apellido.setText(rs.getString("APELLIDO"));
-            jTextField_Salario.setText(Float.toString(rs.getFloat("SUELDO")) + " euros");
-            jTextField_Fecha.setText(rs.getDate("FECHAALTA").toString());
-            jTextField_SueldoMaximo.setText(Float.toString(rs.getFloat("SUELDOMAXIMO")) + " euros");
+        ArrayList campos = new ArrayList();
+        
+        //try {
+            campos = con.datosActual();
+            jTextFieldCod.setText( (String) campos.get(0));
+            jTextField_Nombre.setText((String) campos.get(1));
+            jTextField_Apellido.setText((String) campos.get(2));
             //jButtonFoto.setIcon(setIcon("/fotos/default.jpg", jButtonFoto));
-        } catch (SQLException e) {
+            jTextField_Salario.setText(((String) campos.get(4)) + " euros");
+            jTextField_SueldoMaximo.setText(((String) campos.get(5)) + " euros");
+            jTextField_Fecha.setText((String) campos.get(6));
+            
+        /*} catch (SQLException e) {
             e.printStackTrace();
-        }
+        }*/
 
     }
 
@@ -378,15 +374,21 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
     }
 
     public void inicializaComboBox() {
-        /*ArrayList<String> listaApellidos = new ArrayList<String>();
+        ArrayList<ArrayList> listaApellidos = new ArrayList<ArrayList>();
         
-        listaApellidos = ConexionConsulta.llenar_combo();
+        Conexion con = new Conexion();
+        
+        listaApellidos = con.ejecutaQuery("SELECT DISTINCT APELLIDO FROM EMPLEADO ORDER BY APELLIDO ASC");
+        
+        jComboBox_Apellidos.addItem("TODOS");
         
         for(int i=0; i<listaApellidos.size(); i++)
         {
-            jComboBox_Apellidos.addItem(listaApellidos.get(i));
-        }*/
-        Connection con_aux = null;
+            jComboBox_Apellidos.addItem((String) listaApellidos.get(0).get(i));
+        }
+        
+        con.close();
+/*        Connection con_aux = null;
         Statement stmt_aux = null;
         ResultSet rs_aux = null;
         
@@ -397,14 +399,14 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
                     ResultSet.CONCUR_READ_ONLY);
             rs_aux = stmt_aux.executeQuery("SELECT DISTINCT APELLIDO FROM EMPLEADO ORDER BY APELLIDO");
             
-            this.jComboBox_Apellidos.addItem("NINGUNO");
+            this.jComboBox_Apellidos.addItem("NINGUNO");*/
             //HAY QUE CONECTARLO CON LA CLASE CONECTIONFACTORY
             //Connection con = DriverManager.getConnection("jdbc:derby://localhost:1527/empresa","empresa","empresa"); //abrimos la conexion con la BD
             /*con = ConnectionFactory.getConnection();
             stmt = con.createStatement(); //el objeto con el que vas a usar el SQL con esa BD
             rs = stmt.executeQuery("SELECT DISTINCT APELLIDO FROM empleado ORDER BY APELLIDO"); //objeto que va a usar la sentencia select que le indiques que afecta al estado
 */
-            while (rs_aux.next()) //mientras haya datos en la BD
+ /*           while (rs_aux.next()) //mientras haya datos en la BD
             {
                 this.jComboBox_Apellidos.addItem(rs_aux.getString("APELLIDO"));
             }
@@ -421,7 +423,7 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
             ConnectionFactory.close(rs_aux);
             ConnectionFactory.close(stmt_aux);
             ConnectionFactory.close(con_aux);
-        }
+        }*/
 
     }
 
