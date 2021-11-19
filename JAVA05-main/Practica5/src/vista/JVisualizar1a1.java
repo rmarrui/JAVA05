@@ -322,17 +322,6 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
         
         try {
             con.iniciaRecorrido("SELECT * FROM EMPLEADO");
-        /*    con = ConnectionFactory.getConnection();
-            stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY);
-            rs = stmt.executeQuery("SELECT * FROM EMPLEADO");
-
-            if (rs.next()) {
-                // rs.beforeFirst();
-                return true;
-            } else {
-                return false;
-            }*/
             con.siguienteRegistro();
             return true;
         } catch (Exception e) {
@@ -352,17 +341,16 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
     }
 
     public void muestraNodo() {
-        //jButtonFoto.setEnabled(false);
+        
         ArrayList campos;
         
-        //try {
+        
             campos = con.datosActual();
             String foto = "/fotos/"+campos.get(3);
             jTextFieldCod.setText( (String) campos.get(0));
             jTextField_Nombre.setText((String) campos.get(1));
             jTextField_Apellido.setText((String) campos.get(2));
             jLabelFoto.setIcon(new javax.swing.ImageIcon(getClass().getResource(foto)));
-            //cambiaFoto(foto, jLabelFoto);
             jTextField_Salario.setText(((String) campos.get(4)) + " euros");
             jTextField_SueldoMaximo.setText(((String) campos.get(5)) + " euros");
             jTextField_Fecha.setText((String) campos.get(6));
@@ -371,32 +359,18 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
             if(con.isFirst()){
                 jButton_Anterior.setEnabled(false);
             }
+            else
+                jButton_Anterior.setEnabled(true);
             if(con.isLast()){
                 jButton_Siguiente.setEnabled(false);
             }
+            else
+                jButton_Siguiente.setEnabled(true);
         } catch (SQLException ex) {
             Logger.getLogger(JVisualizar1a1.class.getName()).log(Level.SEVERE, null, ex);
         }
-            
-        /*} catch (SQLException e) {
-            e.printStackTrace();
-        }*/
 
     }
-
-/*    public void cambiaFoto(String url, JLabel label){
-        BufferedImage foto = null;
-        try{
-            foto = ImageIO.read(new File(url));
-        }catch(IOException e){
-            e.printStackTrace();
-        }
-        
-        Image foto_redimensionada = foto.getScaledInstance(label.getWidth(), label.getHeight(), Image.SCALE_SMOOTH);
-        ImageIcon icono = new ImageIcon(foto_redimensionada);
-        
-        label.setIcon(icono);
-    }*/
     
     public Icon setIcon(String url, JButton boton) {
         ImageIcon icon = new ImageIcon(getClass().getResource(url));

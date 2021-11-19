@@ -5,11 +5,16 @@
  */
 package vista;
 
-import controlador.ConnectionFactory;
+import controlador.*;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
+import modelo.Empleado;
 
 /**
  *
@@ -17,14 +22,18 @@ import javax.swing.DefaultListModel;
  */
 public class JPanelList extends javax.swing.JPanel {
 
-    Connection con = null;
-    Statement stmt = null;
-    ResultSet rset = null;
+    private ArrayList<Empleado> lista = new ArrayList();
+    private DefaultListModel<String> modelo;
+    
+    Conexion con = null;
     /**
      * Creates new form JPanelList
      */
     public JPanelList() {
         initComponents();
+        con = new Conexion();
+        modelo = new DefaultListModel<>();
+        iniciarJlist();
     }
 
     /**
@@ -38,75 +47,159 @@ public class JPanelList extends javax.swing.JPanel {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         jListLista = new javax.swing.JList<>();
-        jXDatePicker1 = new org.jdesktop.swingx.JXDatePicker();
-        jXDatePicker2 = new org.jdesktop.swingx.JXDatePicker();
+        jButtonFiltrar = new javax.swing.JButton();
+        jButtonLimpiar = new javax.swing.JButton();
+        jXDatePickerFechaFin = new org.jdesktop.swingx.JXDatePicker();
+        jXDatePickerFechaInicio = new org.jdesktop.swingx.JXDatePicker();
+        jLabelFechaInicio = new javax.swing.JLabel();
+        jLabelFechaFin = new javax.swing.JLabel();
 
         jScrollPane1.setViewportView(jListLista);
+
+        jButtonFiltrar.setText("Filtrar");
+        jButtonFiltrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonFiltrarActionPerformed(evt);
+            }
+        });
+
+        jButtonLimpiar.setText("Limpiar");
+        jButtonLimpiar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonLimpiarActionPerformed(evt);
+            }
+        });
+
+        jXDatePickerFechaInicio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jXDatePickerFechaInicioActionPerformed(evt);
+            }
+        });
+
+        jLabelFechaInicio.setText("Fecha Inicio");
+
+        jLabelFechaFin.setText("Fecha Fin");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(34, 34, 34)
+                .addGap(25, 25, 25)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jXDatePicker1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(37, 37, 37)
+                        .addComponent(jButtonLimpiar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jXDatePicker2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE))
-                .addGap(35, 35, 35))
+                        .addComponent(jButtonFiltrar)
+                        .addGap(61, 61, 61))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabelFechaInicio)
+                        .addGap(18, 18, 18)
+                        .addComponent(jXDatePickerFechaInicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabelFechaFin)
+                        .addGap(27, 27, 27)
+                        .addComponent(jXDatePickerFechaFin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 39, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(37, 37, 37)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(39, 39, 39)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jXDatePicker1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jXDatePicker2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jXDatePickerFechaFin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jXDatePickerFechaInicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabelFechaInicio)
+                    .addComponent(jLabelFechaFin))
+                .addGap(47, 47, 47)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButtonFiltrar)
+                    .addComponent(jButtonLimpiar))
+                .addGap(19, 19, 19))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButtonLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLimpiarActionPerformed
+        // TODO add your handling code here:
+        jXDatePickerFechaInicio.setDate(null); //vaciamos los dos campos de la fecha
+        jXDatePickerFechaFin.setDate(null);
+        iniciarJlist();
+    }//GEN-LAST:event_jButtonLimpiarActionPerformed
+
+    private void jButtonFiltrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFiltrarActionPerformed
+        // TODO add your handling code here:
+        SimpleDateFormat formatoDeFecha = new SimpleDateFormat("yyyy-MM-dd"); //CUIDADO: para las consultas es con este formato
+        
+        if(jXDatePickerFechaInicio.getDate() == null)
+        {
+            JOptionPane.showMessageDialog(jXDatePickerFechaInicio, "Hay que seleccionar una fecha de inicio");
+        }
+        else
+        {
+            if(jXDatePickerFechaFin.getDate() != null && jXDatePickerFechaInicio.getDate().compareTo(jXDatePickerFechaFin.getDate()) > 0) //si la fecha de fin no es nula y la de inicio es mayor que la de fin
+            {
+                JOptionPane.showMessageDialog(null, "La fecha de final no puede ser mayor que la inicial");
+            }
+            else
+            {
+                if(jXDatePickerFechaFin.getDate() == null)
+                {
+                    jXDatePickerFechaFin.setDate(new Date()); //si la final esta vacia ponemos la del sistema por defecto
+                }
+                
+                String iniciofech = formatoDeFecha.format(jXDatePickerFechaInicio.getDate());
+                String finalfech = formatoDeFecha.format(jXDatePickerFechaFin.getDate());
+
+                lista = con.getDataBD("SELECT * FROM EMPLEADO WHERE FECHAALTA BETWEEN '"+iniciofech+"' AND '"+finalfech+"' ORDER BY FECHAALTA DESC");
+                jListLista.setModel(modeloPorDefecto());
+            }
+        }
+    }//GEN-LAST:event_jButtonFiltrarActionPerformed
+
+    private void jXDatePickerFechaInicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jXDatePickerFechaInicioActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jXDatePickerFechaInicioActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonFiltrar;
+    private javax.swing.JButton jButtonLimpiar;
+    private javax.swing.JLabel jLabelFechaFin;
+    private javax.swing.JLabel jLabelFechaInicio;
     private javax.swing.JList<String> jListLista;
     private javax.swing.JScrollPane jScrollPane1;
-    private org.jdesktop.swingx.JXDatePicker jXDatePicker1;
-    private org.jdesktop.swingx.JXDatePicker jXDatePicker2;
+    private org.jdesktop.swingx.JXDatePicker jXDatePickerFechaFin;
+    private org.jdesktop.swingx.JXDatePicker jXDatePickerFechaInicio;
     // End of variables declaration//GEN-END:variables
-
-    public void iniciar()
+   
+    public void iniciarJlist(){
+        lista = con.getDataBD("SELECT * FROM EMPLEADO ORDER BY NUMERO");
+        jListLista.setModel(modeloPorDefecto());
+    }
+    
+    public DefaultListModel modeloPorDefecto()
     {
-        DefaultListModel<String> modelo = new DefaultListModel<>();
-        
-        try
+        if(lista == null)
         {
-            con = ConnectionFactory.getConnection();
-            stmt = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, 
-                                  ResultSet.CONCUR_READ_ONLY);
-            rset = stmt.executeQuery("SELECT * FROM EMPLEADO");
-                       
-            while(rset.next())
+            JOptionPane.showMessageDialog(null, "No hay ningun registro");
+            modelo.addElement("No hay ningun registro");
+        }
+        else
+        {
+            modelo.removeAllElements(); //vaciamos el JList antes de introducir los campos nuevos
+            
+            for(Empleado emp: lista)
             {
-                        System.out.println("NUMERO: " + rset.getInt(1) 
-                               + ", NOMBRE: " + rset.getString(2) 
-                               + ", APELLIDO: " + rset.getString(3)
-                               + ", FOTO: " + rset.getString(4)
-                               + ", SUELDO: " + rset.getFloat(5)
-                               + ", SUELDO-MAXIMO: " + rset.getFloat(6)
-                               + ", FECHA-ALTA: " + rset.getDate(7)
-                
-            );
-                modelo.addElement(rset.getInt(1)+rset.getString(2));
+                modelo.addElement(emp.toString());
             }
-        }catch(Exception e)
-        {
-            e.printStackTrace();            
         }
         
-        jListLista.setModel(modelo);
+        return modelo;
     }
 }

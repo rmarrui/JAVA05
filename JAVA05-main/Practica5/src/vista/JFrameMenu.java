@@ -101,16 +101,17 @@ public class JFrameMenu extends javax.swing.JFrame {
     private void jMenuItemJListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemJListActionPerformed
         // TODO add your handling code here:
         cambiarContenedor(panel_Visualiza_JList);
-        panel_Visualiza_JList.iniciar();
     }//GEN-LAST:event_jMenuItemJListActionPerformed
 
     private void cambiarContenedor(javax.swing.JPanel aux) { //usamos un método para ir cambiando cada panel. Así solo lo escribimos una vez
+        
         this.setContentPane(aux);
         pack();
     }
     /**
      * @param args the command line arguments
      */
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
