@@ -7,6 +7,8 @@ package vista;
 
 import controlador.*;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -16,9 +18,11 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import modelo.*;
 
@@ -63,10 +67,10 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
         jLabel_Titulo = new javax.swing.JLabel();
         jLabelCodEmpleado = new javax.swing.JLabel();
         jTextFieldCod = new javax.swing.JTextField();
-        jButtonFoto = new javax.swing.JButton();
         jLabel_Apellido = new javax.swing.JLabel();
         jTextField_Apellido = new javax.swing.JTextField();
         jComboBox_Apellidos = new javax.swing.JComboBox<>();
+        jLabelFoto = new javax.swing.JLabel();
 
         jLabel_Nombre.setText("Nombre:");
 
@@ -119,8 +123,6 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
             }
         });
 
-        jButtonFoto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/fotos/anonimo.png"))); // NOI18N
-
         jLabel_Apellido.setText("Apellido: ");
 
         jComboBox_Apellidos.addActionListener(new java.awt.event.ActionListener() {
@@ -128,6 +130,8 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
                 jComboBox_ApellidosActionPerformed(evt);
             }
         });
+
+        jLabelFoto.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -159,13 +163,16 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
                             .addComponent(jTextField_Apellido))
                         .addContainerGap())))
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jComboBox_Apellidos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(80, 80, 80)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButtonFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel_Titulo))
-                .addContainerGap(229, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jComboBox_Apellidos, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(37, 37, 37)
+                        .addComponent(jLabelFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(190, 190, 190)
+                        .addComponent(jLabel_Titulo)))
+                .addContainerGap(186, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -175,8 +182,9 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButtonFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jLabelFoto, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabelCodEmpleado)
                             .addComponent(jTextFieldCod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -291,11 +299,11 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonFoto;
     private javax.swing.JButton jButton_Anterior;
     private javax.swing.JButton jButton_Siguiente;
     private javax.swing.JComboBox<String> jComboBox_Apellidos;
     private javax.swing.JLabel jLabelCodEmpleado;
+    private javax.swing.JLabel jLabelFoto;
     private javax.swing.JLabel jLabel_Apellido;
     private javax.swing.JLabel jLabel_Fecha;
     private javax.swing.JLabel jLabel_Nombre;
@@ -349,10 +357,12 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
         
         //try {
             campos = con.datosActual();
+            String foto = "/fotos/"+campos.get(3);
             jTextFieldCod.setText( (String) campos.get(0));
             jTextField_Nombre.setText((String) campos.get(1));
             jTextField_Apellido.setText((String) campos.get(2));
-            //jButtonFoto.setIcon(setIcon("/fotos/default.jpg", jButtonFoto));
+            jLabelFoto.setIcon(new javax.swing.ImageIcon(getClass().getResource(foto)));
+            //cambiaFoto(foto, jLabelFoto);
             jTextField_Salario.setText(((String) campos.get(4)) + " euros");
             jTextField_SueldoMaximo.setText(((String) campos.get(5)) + " euros");
             jTextField_Fecha.setText((String) campos.get(6));
@@ -374,6 +384,20 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
 
     }
 
+/*    public void cambiaFoto(String url, JLabel label){
+        BufferedImage foto = null;
+        try{
+            foto = ImageIO.read(new File(url));
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+        
+        Image foto_redimensionada = foto.getScaledInstance(label.getWidth(), label.getHeight(), Image.SCALE_SMOOTH);
+        ImageIcon icono = new ImageIcon(foto_redimensionada);
+        
+        label.setIcon(icono);
+    }*/
+    
     public Icon setIcon(String url, JButton boton) {
         ImageIcon icon = new ImageIcon(getClass().getResource(url));
 
@@ -446,7 +470,6 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
         jTextField_Salario.setText(0.0 + " euros");
         jTextField_Fecha.setText("01/01/2000");
         jTextField_SueldoMaximo.setText(0.0 + " euros");
-        jButtonFoto.setIcon(setIcon("/fotos/default.jpg", jButtonFoto));
     }
 
 }
