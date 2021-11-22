@@ -25,15 +25,12 @@ public class JPanelList extends javax.swing.JPanel {
     private ArrayList<Empleado> lista = new ArrayList();
     private DefaultListModel<String> modelo;
     
-    Conexion con = null;
     /**
      * Creates new form JPanelList
      */
     public JPanelList() {
         initComponents();
-        con = new Conexion();
         modelo = new DefaultListModel<>();
-        iniciarJlist();
     }
 
     /**
@@ -144,7 +141,7 @@ public class JPanelList extends javax.swing.JPanel {
         {
             if(jXDatePickerFechaFin.getDate() != null && jXDatePickerFechaInicio.getDate().compareTo(jXDatePickerFechaFin.getDate()) > 0) //si la fecha de fin no es nula y la de inicio es mayor que la de fin
             {
-                JOptionPane.showMessageDialog(null, "La fecha de final no puede ser mayor que la inicial");
+                JOptionPane.showMessageDialog(null, "La fecha de inicio no puede ser mayor que la final");
             }
             else
             {
@@ -156,8 +153,10 @@ public class JPanelList extends javax.swing.JPanel {
                 String iniciofech = formatoDeFecha.format(jXDatePickerFechaInicio.getDate());
                 String finalfech = formatoDeFecha.format(jXDatePickerFechaFin.getDate());
 
-                lista = con.getDataBD("SELECT * FROM EMPLEADO WHERE FECHAALTA BETWEEN '"+iniciofech+"' AND '"+finalfech+"' ORDER BY FECHAALTA DESC");
+                Conexion.abrirConexion();
+                lista = Conexion.getDataBD("SELECT * FROM EMPLEADO WHERE FECHAALTA BETWEEN '"+iniciofech+"' AND '"+finalfech+"' ORDER BY FECHAALTA DESC");
                 jListLista.setModel(modeloPorDefecto());
+                Conexion.close();
             }
         }
     }//GEN-LAST:event_jButtonFiltrarActionPerformed
@@ -179,8 +178,10 @@ public class JPanelList extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
    
     public void iniciarJlist(){
-        lista = con.getDataBD("SELECT * FROM EMPLEADO ORDER BY NUMERO");
+        Conexion.abrirConexion();
+        lista = Conexion.getDataBD("SELECT * FROM EMPLEADO ORDER BY NUMERO");
         jListLista.setModel(modeloPorDefecto());
+        Conexion.close();
     }
     
     public DefaultListModel modeloPorDefecto()

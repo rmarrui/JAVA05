@@ -31,17 +31,8 @@ import modelo.*;
  * @author alumno
  */
 public class JVisualizar1a1 extends javax.swing.JPanel {
-/*
-    Connection con = null;
-    Statement stmt = null;
-    ResultSet rs = null;
-*/
-    Conexion con;
-    /**
-     * Creates new form JPanelVer
-     */
+
     public JVisualizar1a1() {
-        con = new Conexion();
         initComponents();
     }
 
@@ -220,23 +211,11 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton_SiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_SiguienteActionPerformed
-        // TODO add your handling code here:
-
-        /*        if (!JFrameMenu.getLista().esUltimo()) { //mientras no hayamos llegado al final de la lista podremos avanzar al siguiente elemento 
-            JFrameMenu.getLista().avanzar();
-        } else {
-            jButton_Siguiente.setEnabled(false); //si estamos al final de la lista inhabilitamos el boton de siguiente
-        }
-
-        this.muestraNodo(JFrameMenu.getLista()); //mostramos el nodo en el que estamos actualmente
-
-        jButton_Anterior.setEnabled(true); //como no estamos en el primero el boton anterior lo habilitamos
-         */
         if (avanzar()) {
             jButton_Anterior.setEnabled(true);
             muestraNodo();
             try {
-                if(con.isLast())
+                if(Conexion.isLast())
                     jButton_Siguiente.setEnabled(false);
             } catch (SQLException ex) {
                 Logger.getLogger(JVisualizar1a1.class.getName()).log(Level.SEVERE, null, ex);
@@ -250,22 +229,11 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
     }//GEN-LAST:event_jTextField_SueldoMaximoActionPerformed
 
     private void jButton_AnteriorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_AnteriorActionPerformed
-        // TODO add your handling code here:
-        /*       if (!JFrameMenu.getLista().esPrimero()) { //mientras no hayamos llegado al principio de la lista podremos retorceder al anterior elemento 
-            JFrameMenu.getLista().retroceder();
-        } else {
-            jButton_Anterior.setEnabled(false); //si estamos al principio de la lista inhabilitamos el boton de anterior
-        }
-
-        this.muestraNodo(JFrameMenu.getLista()); //mostramos el nodo en el que estamos actualmente
-
-        jButton_Siguiente.setEnabled(true); //como no estamos en el ultimo el boton siguiente lo habilitamos
-         */
         if (retroceder()) {
             jButton_Siguiente.setEnabled(true);
             muestraNodo();
             try {
-                if(con.isFirst())
+                if(Conexion.isFirst())
                     jButton_Anterior.setEnabled(false);
             } catch (SQLException ex) {
                 Logger.getLogger(JVisualizar1a1.class.getName()).log(Level.SEVERE, null, ex);
@@ -288,12 +256,12 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
     private void jComboBox_ApellidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox_ApellidosActionPerformed
         // TODO add your handling code here:
         if(((String) jComboBox_Apellidos.getSelectedItem()).equals("TODOS")){
-            con.iniciaRecorrido("SELECT * FROM EMPLEADO");
+            Conexion.iniciaRecorrido("SELECT * FROM EMPLEADO");
         }
         else{
-            con.iniciaRecorrido("SELECT * FROM EMPLEADO WHERE APELLIDO = '" + ((String) jComboBox_Apellidos.getSelectedItem())+"'");
+            Conexion.iniciaRecorrido("SELECT * FROM EMPLEADO WHERE APELLIDO = '" + ((String) jComboBox_Apellidos.getSelectedItem())+"'");
         }
-        con.siguienteRegistro();
+        Conexion.siguienteRegistro();
         muestraNodo();
     }//GEN-LAST:event_jComboBox_ApellidosActionPerformed
 
@@ -321,8 +289,8 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
     public boolean iniciar() {
         
         try {
-            con.iniciaRecorrido("SELECT * FROM EMPLEADO");
-            con.siguienteRegistro();
+            Conexion.iniciaRecorrido("SELECT * FROM EMPLEADO");
+            Conexion.siguienteRegistro();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -332,12 +300,12 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
 
     public boolean avanzar() 
     {
-        return con.siguienteRegistro();
+        return Conexion.siguienteRegistro();
     }
 
     public boolean retroceder() 
     {
-        return con.anteriorRegistro();
+        return Conexion.anteriorRegistro();
     }
 
     public void muestraNodo() {
@@ -345,7 +313,7 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
         ArrayList campos;
         
         
-            campos = con.datosActual();
+            campos = Conexion.datosActual();
             String foto = "/fotos/"+campos.get(3);
             jTextFieldCod.setText( (String) campos.get(0));
             jTextField_Nombre.setText((String) campos.get(1));
@@ -356,12 +324,12 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
             jTextField_Fecha.setText((String) campos.get(6));
             
         try {
-            if(con.isFirst()){
+            if(Conexion.isFirst()){
                 jButton_Anterior.setEnabled(false);
             }
             else
                 jButton_Anterior.setEnabled(true);
-            if(con.isLast()){
+            if(Conexion.isLast()){
                 jButton_Siguiente.setEnabled(false);
             }
             else
@@ -382,59 +350,18 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
 
         return icon;
     }
-
+    
     public void inicializaComboBox() {
         ArrayList<ArrayList> listaApellidos = new ArrayList<ArrayList>();
         
-        Conexion con_combo = new Conexion();
-        
-        listaApellidos = con_combo.ejecutaQuery("SELECT DISTINCT APELLIDO FROM EMPLEADO ORDER BY APELLIDO ASC");
-        
+        jComboBox_Apellidos.removeAllItems();
+        listaApellidos = Conexion.ejecutaQuery("SELECT DISTINCT APELLIDO FROM EMPLEADO ORDER BY APELLIDO ASC");
         jComboBox_Apellidos.addItem("TODOS");
         
         for(int i=0; i<listaApellidos.size(); i++)
         {
             jComboBox_Apellidos.addItem((String) listaApellidos.get(0).get(i));
         }
-        
-        con_combo.close();
-/*        Connection con_aux = null;
-        Statement stmt_aux = null;
-        ResultSet rs_aux = null;
-        
-
-        try {
-            con_aux = ConnectionFactory.getConnection();
-            stmt_aux = con_aux.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
-                    ResultSet.CONCUR_READ_ONLY);
-            rs_aux = stmt_aux.executeQuery("SELECT DISTINCT APELLIDO FROM EMPLEADO ORDER BY APELLIDO");
-            
-            this.jComboBox_Apellidos.addItem("NINGUNO");*/
-            //HAY QUE CONECTARLO CON LA CLASE CONECTIONFACTORY
-            //Connection con = DriverManager.getConnection("jdbc:derby://localhost:1527/empresa","empresa","empresa"); //abrimos la conexion con la BD
-            /*con = ConnectionFactory.getConnection();
-            stmt = con.createStatement(); //el objeto con el que vas a usar el SQL con esa BD
-            rs = stmt.executeQuery("SELECT DISTINCT APELLIDO FROM empleado ORDER BY APELLIDO"); //objeto que va a usar la sentencia select que le indiques que afecta al estado
-*/
- /*           while (rs_aux.next()) //mientras haya datos en la BD
-            {
-                this.jComboBox_Apellidos.addItem(rs_aux.getString("APELLIDO"));
-            }
-
-            rs_aux.close();
-            stmt_aux.close();
-            con_aux.close();
-            //    con.close();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, e);
-        }
-        finally
-        {
-            ConnectionFactory.close(rs_aux);
-            ConnectionFactory.close(stmt_aux);
-            ConnectionFactory.close(con_aux);
-        }*/
-
     }
 
     public void vaciarCampos() {

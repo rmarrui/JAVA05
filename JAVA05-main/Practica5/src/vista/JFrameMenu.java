@@ -20,15 +20,14 @@ import javax.swing.JMenu;
  * @author CARLOS
  */
 public class JFrameMenu extends javax.swing.JFrame {
-    public static Connection conexion;
+    //public static Connection conexion;
     /**
      * Creates new form NewJFrame
      */
     public JFrameMenu() {
         initComponents();
-        //jMenu1JList.setIcon(setIcon("/fotos/listar.png", jMenu1JList));
-        //jMenuItem2.setIcon(setIcon("/fotos/listar.png", jMenu1JList));
         controlador.AccesoA.conectarBD();
+        //Conexion.abrirConexion();
     }
 
     /**
@@ -90,21 +89,26 @@ public class JFrameMenu extends javax.swing.JFrame {
 
     private void jMenuItem2Visualiza1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2Visualiza1ActionPerformed
         // TODO add your handling code here:
+        
+        cambiarContenedor(panel_Visualiza_a1);
+        
+        Conexion.abrirConexion();
+        
         panel_Visualiza_a1.inicializaComboBox();
         panel_Visualiza_a1.iniciar();
         panel_Visualiza_a1.muestraNodo(); //mostramos ese primero de la lista
-        cambiarContenedor(panel_Visualiza_a1);
         
         
     }//GEN-LAST:event_jMenuItem2Visualiza1ActionPerformed
 
     private void jMenuItemJListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemJListActionPerformed
         // TODO add your handling code here:
+        panel_Visualiza_JList.iniciarJlist();
         cambiarContenedor(panel_Visualiza_JList);
     }//GEN-LAST:event_jMenuItemJListActionPerformed
 
     private void cambiarContenedor(javax.swing.JPanel aux) { //usamos un método para ir cambiando cada panel. Así solo lo escribimos una vez
-        
+        Conexion.close();
         this.setContentPane(aux);
         pack();
     }
@@ -155,16 +159,4 @@ public class JFrameMenu extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemJList;
     private javax.swing.JMenu jMenuVisualiza1a1;
     // End of variables declaration//GEN-END:variables
-
-    public Icon setIcon(String url, JMenu boton)
-    {
-        ImageIcon icon = new ImageIcon(getClass().getResource(url));
-        
-        int ancho = boton.getWidth();
-        int alto = boton.getHeight();
-        
-        ImageIcon icono = new ImageIcon(icon.getImage().getScaledInstance(ancho, alto, Image.SCALE_DEFAULT));
-        
-        return icon;
-    }
 }

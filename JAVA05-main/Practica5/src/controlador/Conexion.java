@@ -24,28 +24,31 @@ import modelo.Empleado;
  */
 public class Conexion {
 
-    private Connection con;
-    private Statement stmt;
-    private ResultSet rs;
+    private static Connection con;
+    private static Statement stmt;
+    private static ResultSet rs;
 
-    public Conexion() {
+    public static void abrirConexion(){
         try {
             con = ConnectionFactory.getConnection();
-        } catch (SQLException e) {
-            System.err.println("Error al hacer la conexión.");
+        } catch (SQLException ex) {
+            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    public static Connection getConexion() {
+        return con;
+    }
 
-    public boolean isFirst() throws SQLException {
+    public static boolean isFirst() throws SQLException {
         return rs.isFirst();
     }
 
-    public boolean isLast() throws SQLException {
+    public static boolean isLast() throws SQLException {
         return rs.isLast();
     }
     // Metodo que prepara el ResultSet para recorrer los datos 1 a 1, según la query s
 
-    public void iniciaRecorrido(String s) {
+    public static void iniciaRecorrido(String s) {
         try {
             if (rs != null && !rs.isClosed()) // Cierra rs y stmt para empezar de 0
             {
@@ -64,7 +67,7 @@ public class Conexion {
     }
 
     // Para devolver los datos del result set actual
-    public ArrayList datosActual() {
+    public static ArrayList datosActual() {
         ArrayList l = new ArrayList();
         Object a;
 
@@ -92,7 +95,7 @@ public class Conexion {
         }
     }
 
-    public boolean siguienteRegistro() {
+    public static boolean siguienteRegistro() {
         try {
             rs.next();
             return true;
@@ -101,7 +104,7 @@ public class Conexion {
         }
     }
 
-    public boolean anteriorRegistro() {
+    public static boolean anteriorRegistro() {
         try {
             rs.previous();
             return true;
@@ -111,7 +114,7 @@ public class Conexion {
     }
 
     // Metodo que inserta en un ArrayList los resultados de la query. Necesita indicar el numero de campos, y conviene vaciar la lista antes de llamarlo.
-    public ArrayList<ArrayList> ejecutaQuery(String s) {
+    public static ArrayList<ArrayList> ejecutaQuery(String s) {
         ArrayList<ArrayList> l = new ArrayList<ArrayList>();
         ArrayList aux = new ArrayList();
         try (Statement stmt_query = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
@@ -134,7 +137,7 @@ public class Conexion {
         }
     }
 
-    public void close() {
+    public static void close() {
         try {
             if (rs != null && !rs.isClosed()) {
                 rs.close();
@@ -150,7 +153,7 @@ public class Conexion {
         }
     }
 
-    public ArrayList getDataBD(String consulta) {
+    public static ArrayList getDataBD(String consulta) {
         ArrayList lista = new ArrayList();
 
         try (Statement stmt_query = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
@@ -175,7 +178,7 @@ public class Conexion {
         return lista;
     }
     
-    public void cerrarConexion(){
+    public static void cerrarConexion(){
         try {
             con.close();
         } catch (SQLException ex) {
