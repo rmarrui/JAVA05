@@ -25,15 +25,13 @@ public class JPanelList extends javax.swing.JPanel {
     private ArrayList<Empleado> lista = new ArrayList();
     private DefaultListModel<String> modelo;
     
-    Connection con = null;
-    Statement stmt = null;
-    ResultSet rset = null;
+    Conexion con = null;
     /**
      * Creates new form JPanelList
      */
     public JPanelList() {
         initComponents();
-        
+        con = new Conexion();
         modelo = new DefaultListModel<>();
         iniciarJlist();
     }
@@ -158,7 +156,7 @@ public class JPanelList extends javax.swing.JPanel {
                 String iniciofech = formatoDeFecha.format(jXDatePickerFechaInicio.getDate());
                 String finalfech = formatoDeFecha.format(jXDatePickerFechaFin.getDate());
 
-                lista = Conexion.getDataBD("SELECT * FROM EMPLEADO WHERE FECHAALTA BETWEEN '"+iniciofech+"' AND '"+finalfech+"' ORDER BY FECHAALTA DESC");
+                lista = con.getDataBD("SELECT * FROM EMPLEADO WHERE FECHAALTA BETWEEN '"+iniciofech+"' AND '"+finalfech+"' ORDER BY FECHAALTA DESC");
                 jListLista.setModel(modeloPorDefecto());
             }
         }
@@ -181,7 +179,7 @@ public class JPanelList extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
    
     public void iniciarJlist(){
-        lista = Conexion.getDataBD("SELECT * FROM EMPLEADO ORDER BY NUMERO");
+        lista = con.getDataBD("SELECT * FROM EMPLEADO ORDER BY NUMERO");
         jListLista.setModel(modeloPorDefecto());
     }
     
