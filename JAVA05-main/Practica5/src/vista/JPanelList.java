@@ -24,7 +24,7 @@ public class JPanelList extends javax.swing.JPanel {
 
     private ArrayList<Empleado> lista = new ArrayList();
     private DefaultListModel<String> modelo;
-    
+
     /**
      * Creates new form JPanelList
      */
@@ -132,29 +132,22 @@ public class JPanelList extends javax.swing.JPanel {
     private void jButtonFiltrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonFiltrarActionPerformed
         // TODO add your handling code here:
         SimpleDateFormat formatoDeFecha = new SimpleDateFormat("yyyy-MM-dd"); //CUIDADO: para las consultas es con este formato
-        
-        if(jXDatePickerFechaInicio.getDate() == null)
-        {
-            JOptionPane.showMessageDialog(jXDatePickerFechaInicio, "Hay que seleccionar una fecha de inicio");
+        if (jXDatePickerFechaFin.getDate() == null) {
+            jXDatePickerFechaFin.setDate(new Date()); //si la final esta vacia ponemos la del sistema por defecto
         }
-        else
-        {
-            if(jXDatePickerFechaFin.getDate() != null && jXDatePickerFechaInicio.getDate().compareTo(jXDatePickerFechaFin.getDate()) > 0) //si la fecha de fin no es nula y la de inicio es mayor que la de fin
+        if (jXDatePickerFechaInicio.getDate() == null) {
+            JOptionPane.showMessageDialog(jXDatePickerFechaInicio, "Hay que seleccionar una fecha de inicio");
+        } else {
+            if (jXDatePickerFechaFin.getDate() != null && jXDatePickerFechaInicio.getDate().compareTo(jXDatePickerFechaFin.getDate()) > 0) //si la fecha de fin no es nula y la de inicio es mayor que la de fin
             {
                 JOptionPane.showMessageDialog(null, "La fecha de inicio no puede ser mayor que la final");
-            }
-            else
-            {
-                if(jXDatePickerFechaFin.getDate() == null)
-                {
-                    jXDatePickerFechaFin.setDate(new Date()); //si la final esta vacia ponemos la del sistema por defecto
-                }
-                
+            } else {
+
                 String iniciofech = formatoDeFecha.format(jXDatePickerFechaInicio.getDate());
                 String finalfech = formatoDeFecha.format(jXDatePickerFechaFin.getDate());
 
                 Conexion.abrirConexion();
-                lista = Conexion.getDataBD("SELECT * FROM EMPLEADO WHERE FECHAALTA BETWEEN '"+iniciofech+"' AND '"+finalfech+"' ORDER BY FECHAALTA DESC");
+                lista = Conexion.getDataBD("SELECT * FROM EMPLEADO WHERE FECHAALTA BETWEEN '" + iniciofech + "' AND '" + finalfech + "' ORDER BY FECHAALTA DESC");
                 jListLista.setModel(modeloPorDefecto());
                 Conexion.close();
             }
@@ -176,31 +169,26 @@ public class JPanelList extends javax.swing.JPanel {
     private org.jdesktop.swingx.JXDatePicker jXDatePickerFechaFin;
     private org.jdesktop.swingx.JXDatePicker jXDatePickerFechaInicio;
     // End of variables declaration//GEN-END:variables
-   
-    public void iniciarJlist(){
+
+    public void iniciarJlist() {
         Conexion.abrirConexion();
         lista = Conexion.getDataBD("SELECT * FROM EMPLEADO ORDER BY NUMERO");
         jListLista.setModel(modeloPorDefecto());
         Conexion.close();
     }
-    
-    public DefaultListModel modeloPorDefecto()
-    {
-        if(lista == null)
-        {
+
+    public DefaultListModel modeloPorDefecto() {
+        if (lista == null) {
             JOptionPane.showMessageDialog(null, "No hay ningun registro");
             modelo.addElement("No hay ningun registro");
-        }
-        else
-        {
+        } else {
             modelo.removeAllElements(); //vaciamos el JList antes de introducir los campos nuevos
-            
-            for(Empleado emp: lista)
-            {
+
+            for (Empleado emp : lista) {
                 modelo.addElement(emp.toString());
             }
         }
-        
+
         return modelo;
     }
 }
