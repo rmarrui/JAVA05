@@ -354,9 +354,15 @@ public class JVisualizar1a1 extends javax.swing.JPanel {
     public void inicializaComboBox() {
         ArrayList<ArrayList> listaApellidos = new ArrayList<ArrayList>();
         
-        jComboBox_Apellidos.removeAllItems();
         listaApellidos = Conexion.ejecutaQuery("SELECT DISTINCT APELLIDO FROM EMPLEADO ORDER BY APELLIDO ASC");
-        jComboBox_Apellidos.addItem("TODOS");
+        
+        if(jComboBox_Apellidos.getItemAt(0) == null)
+            jComboBox_Apellidos.addItem("TODOS");
+        
+        jComboBox_Apellidos.setSelectedIndex(0);
+        
+        for(int i = 1; i < jComboBox_Apellidos.getComponentCount(); i++)
+            jComboBox_Apellidos.remove(i);
         
         for(int i=0; i<listaApellidos.size(); i++)
         {
