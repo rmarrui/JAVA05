@@ -5,15 +5,9 @@
  */
 package vista;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import javax.swing.JOptionPane;
 import controlador.*;
-import java.awt.Image;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JMenu;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /**
  *
@@ -27,6 +21,13 @@ public class JFrameMenu extends javax.swing.JFrame {
     public JFrameMenu() {
         initComponents();
         controlador.AccesoA.conectarBD();
+        this.addWindowListener(new WindowAdapter() {
+        public void windowClosing(WindowEvent e) {
+            Conexion.close();
+            System.exit(0);
+        }
+
+    });
         //Conexion.abrirConexion();
     }
 

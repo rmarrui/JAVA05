@@ -15,7 +15,6 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import modelo.Empleado;
 
 /**
@@ -31,6 +30,7 @@ public class Conexion {
     public static void abrirConexion(){
         try {
             con = ConnectionFactory.getConnection();
+            // System.out.println("\n Conexion abierta.");
         } catch (SQLException ex) {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -148,6 +148,7 @@ public class Conexion {
             if (con != null && !con.isClosed()) {
                 con.close();
             }
+            //System.out.println("\n Conexion cerrada.");
         } catch (SQLException ex) {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
         }
